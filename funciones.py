@@ -3,7 +3,7 @@ import utils
 import base64
 
 # JSON donde se almacenan los datos
-dictJson = utils.load_json("passwords.json")
+dictJson = utils.load_json(".passwords.json")
 
 # Funciones CRUD
 def create_data(nameEntry, userEntry, passEntry, treeview):
@@ -46,7 +46,7 @@ def create_data(nameEntry, userEntry, passEntry, treeview):
     }
 
     # Guardar datos en el archivo JSON
-    utils.save_json("passwords.json", dictJson)
+    utils.save_json(".passwords.json", dictJson)
 
     # Actualizar el TreeView
     update_treeview(treeview)
@@ -93,7 +93,7 @@ def update_data(nameEntry, userEntry, passEntry, treeview):
         }
 
         # Guardar datos actualizados
-        utils.save_json("passwords.json", dictJson)
+        utils.save_json(".passwords.json", dictJson)
 
         # Actualizar el TreeView
         update_treeview(treeview)
@@ -119,7 +119,7 @@ def delete_data(treeview, nameEntry, userEntry, passEntry):
                 del dictJson[app_Name]
 
                 # Guardar los cambios en el archivo JSON
-                utils.save_json("passwords.json", dictJson)
+                utils.save_json(".passwords.json", dictJson)
 
                 # Actualizar el TreeView
                 update_treeview(treeview)

@@ -3,7 +3,7 @@ from tkinter import ttk
 import base64
 import funciones, utils, genPass
 
-dictJson = utils.load_json("passwords.json")
+dictJson = utils.load_json(".passwords.json")
 
 # Función para actualizar el Treeview
 def update_treeview(treeview):
@@ -22,6 +22,7 @@ def update_treeview(treeview):
         decodeNonce = base64.b64decode(nonce)
         decodeTag = base64.b64decode(tag)
         decodeCipherText = base64.b64decode(cipherText)
+        
         print(f"Salt a: {decodeSalt}")
         print(f"Nonce a: {decodeNonce}")
         print(f"Tag a: {decodeTag}")
