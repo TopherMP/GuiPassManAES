@@ -22,7 +22,7 @@ def update_treeview(treeview):
         decodeNonce = base64.b64decode(nonce)
         decodeTag = base64.b64decode(tag)
         decodeCipherText = base64.b64decode(cipherText)
-        
+
         print(f"Salt a: {decodeSalt}")
         print(f"Nonce a: {decodeNonce}")
         print(f"Tag a: {decodeTag}")
@@ -80,21 +80,27 @@ root.resizable(False, False)
 
 root.config(bg="#f0f0f0")  # Fondo gris claro
 
+
+
 # Campo de entrada de datos
 frame = tk.Frame(root, bg="#f0f0f0")
 frame.pack(pady=20)
 
-tk.Label(frame, text="Ingresa nombre página/aplicación:", bg="#f0f0f0").grid(row=0, column=0, padx=5, pady=5)
+ttk.Label(frame, text="Ingrese una contraseña maestra: ").grid(row=0, column=0)
+masterPass = ttk.Entry(frame, width=30)
+masterPass.grid(row=0, column=1)
+
+tk.Label(frame, text="Ingresa nombre página/aplicación:", bg="#f0f0f0").grid(row=1, column=0, padx=5, pady=5)
 nameEntry = ttk.Entry(frame, width=30)
-nameEntry.grid(row=0, column=1, padx=5, pady=5)
+nameEntry.grid(row=1, column=1, padx=5, pady=5)
 
-tk.Label(frame, text="Ingresa tu nombre de usuario o mail:", bg="#f0f0f0").grid(row=1, column=0, padx=5, pady=5)
+tk.Label(frame, text="Ingresa tu nombre de usuario o mail:", bg="#f0f0f0").grid(row=2, column=0, padx=5, pady=5)
 userEntry = ttk.Entry(frame, width=30)
-userEntry.grid(row=1, column=1, padx=5, pady=5)
+userEntry.grid(row=2, column=1, padx=5, pady=5)
 
-tk.Label(frame, text="Ingresa la contraseña:", bg="#f0f0f0").grid(row=2, column=0, padx=5, pady=5)
+tk.Label(frame, text="Ingresa la contraseña:", bg="#f0f0f0").grid(row=3, column=0, padx=5, pady=5)
 passEntry = ttk.Entry(frame, width=30)
-passEntry.grid(row=2, column=1, padx=5, pady=5)
+passEntry.grid(row=3, column=1, padx=5, pady=5)
 
 # Botones para CRUD
 button_frame = ttk.Frame(root)
