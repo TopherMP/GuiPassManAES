@@ -1,5 +1,6 @@
 import json
 import tkinter as tk
+import base64
 from tkinter import messagebox
 
 from Crypto.Protocol.KDF import PBKDF2
@@ -54,3 +55,33 @@ def validate_entries(*entries):
 def clean_entries(*entries):
     for entry in entries:
         entry.delete(0,tk.END)
+
+def update_treeview(treeview):
+    dictJson = load_json(".passwords.json")
+    
+    for row in treeview.get_children():
+        treeview.delete(row)
+
+    for app, data in dictJson.items():
+
+        salt = data["Salt"]
+        nonce = data["Nonce"]
+        tag = data["Tag"]
+        cipherText = data["Password"]
+
+        decodeSalt = base64.b64decode(salt)
+        decodeNonce = base64.b64decode(nonce)
+        decodeTag = base64.b64decode(tag)
+        decodeCipherText = base64.b64decode(cipherText)
+
+        print(f"Salt a: {decodeSalt}")
+        print(f"Nonce a: {decodeNonce}")
+        print(f"Tag a: {decodeTag}")
+        print(f"CipherText a: {decodeCipherText}")
+
+        master = data["MasterPass"]
+
+        decipher = decryptMasterPass(master, decodeSalt, decodeNonce, decodeTag, decodeCipherText)
+        print(f"decipher {decipher}")
+
+        treeview.insert("", "end", values=(app, data["User"], decipher))

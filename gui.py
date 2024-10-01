@@ -6,35 +6,7 @@ import funciones, utils, genPass
 dictJson = utils.load_json(".passwords.json")
 
 # Función para actualizar el Treeview
-def update_treeview(treeview):
 
-    for row in treeview.get_children():
-        treeview.delete(row)
-
-    for app, data in dictJson.items():
-
-        salt = data["Salt"]
-        nonce = data["Nonce"]
-        tag = data["Tag"]
-        cipherText = data["Password"]
-
-        decodeSalt = base64.b64decode(salt)
-        decodeNonce = base64.b64decode(nonce)
-        decodeTag = base64.b64decode(tag)
-        decodeCipherText = base64.b64decode(cipherText)
-
-        print(f"Salt a: {decodeSalt}")
-        print(f"Nonce a: {decodeNonce}")
-        print(f"Tag a: {decodeTag}")
-        print(f"CipherText a: {decodeCipherText}")
-
-
-        masterPass = "Hola"
-
-        decipher = utils.decryptMasterPass(masterPass, decodeSalt, decodeNonce, decodeTag, decodeCipherText)
-        print(f"decipher {decipher}")
-
-        treeview.insert("", "end", values=(app, data["User"], decipher))
 
 # Obtener los datos del TreeView
 def get_Data_Entry(event):
@@ -55,10 +27,35 @@ def get_Data_Entry(event):
 def updateLabelSlider(e):
     value = int(slider.get())  # Convertir el valor del slider a entero
     sliderValue.config(text=value)  # Actualizar el texto del label con el valor del slider
+
+def encrypt():
+    for app, data in dictJson.items():
+        master = data["MasterPass"]
+
+        salt, nonce, encryptedPass, tag = utils.encryptMasterPass(master, data["Password"])
+        print(encryptedPass)
+
+        encodePass = base64.b64encode(encryptedPass).decode('utf-8')
+        print(encodePass)
+        encodeSalt = base64.b64encode(salt).decode('utf-8')
+        encodeNonce = base64.b64encode(nonce).decode('utf-8')
+        encodeTag = base64.b64encode(tag).decode('utf-8')
+
+        dictJson[app] = {
+        "User": data["User"],
+        "Password": encodePass,
+        "Salt": encodeSalt,
+        "Nonce": encodeNonce,
+        "Tag": encodeTag,
+        "MasterPass": master
+    }
+    root.destroy()
     
 # Configuración de la ventana principal
 root = tk.Tk()
 root.title("Gestor de Contraseñas")
+
+root.protocol("WM_DELETE_WINDOW",encrypt)
 
 # Definir el tamaño de la ventana
 window_width = 600
@@ -80,15 +77,13 @@ root.resizable(False, False)
 
 root.config(bg="#f0f0f0")  # Fondo gris claro
 
-
-
 # Campo de entrada de datos
 frame = tk.Frame(root, bg="#f0f0f0")
 frame.pack(pady=20)
 
 ttk.Label(frame, text="Ingrese una contraseña maestra: ").grid(row=0, column=0)
-masterPass = ttk.Entry(frame, width=30)
-masterPass.grid(row=0, column=1)
+masterEntry = ttk.Entry(frame, width=30)
+masterEntry.grid(row=0, column=1)
 
 tk.Label(frame, text="Ingresa nombre página/aplicación:", bg="#f0f0f0").grid(row=1, column=0, padx=5, pady=5)
 nameEntry = ttk.Entry(frame, width=30)
@@ -101,19 +96,6 @@ userEntry.grid(row=2, column=1, padx=5, pady=5)
 tk.Label(frame, text="Ingresa la contraseña:", bg="#f0f0f0").grid(row=3, column=0, padx=5, pady=5)
 passEntry = ttk.Entry(frame, width=30)
 passEntry.grid(row=3, column=1, padx=5, pady=5)
-
-# Botones para CRUD
-button_frame = ttk.Frame(root)
-button_frame.pack(pady=10)
-
-btn_create = ttk.Button(button_frame, text="Crear", command=lambda: funciones.create_data(nameEntry, userEntry, passEntry, treeview))
-btn_create.grid(row=0, column=0, padx=5, pady=5)
-
-btn_update = ttk.Button(button_frame, text="Actualizar", command=lambda: funciones.update_data(nameEntry, userEntry, passEntry, treeview))
-btn_update.grid(row=0, column=1, padx=5, pady=5)
-
-btn_delete = ttk.Button(button_frame, text="Eliminar", command=lambda: funciones.delete_data(treeview, nameEntry, userEntry, passEntry))
-btn_delete.grid(row=0, column=2, padx=5, pady=5)
 
 # password generate field
 generate_frame = ttk.Frame(root)
@@ -147,7 +129,7 @@ check_Num.grid(row=2, column=3)
 check_Symbols = tk.Checkbutton(generate_frame, text="Símbolos", variable=var_symbols)
 check_Symbols.grid(row=2, column=4)
 
-btn_generate = ttk.Button(generate_frame, text="Generar contraseña",command=lambda: genPass.generate_password(var_mayus,var_num, var_symbols, passEntry, slider))
+btn_generate = ttk.Button(generate_frame, text="Generar contraseña",command=lambda: genPass.generate_password(var_mayus, var_num, var_symbols, passEntry, slider))
 btn_generate.grid(row=1,column=4)
 
 # Configuración del Treeview
@@ -164,8 +146,21 @@ treeview.column("Aplicación")
 treeview.column("Usuario")
 treeview.column("Contraseña")
 
+# Botones para CRUD
+button_frame = ttk.Frame(root)
+button_frame.pack(pady=10)
+
+btn_create = ttk.Button(button_frame, text="Crear", command=lambda: funciones.create_data(masterEntry, nameEntry, userEntry, passEntry, treeview))
+btn_create.grid(row=0, column=0, padx=5, pady=5)
+
+btn_update = ttk.Button(button_frame, text="Actualizar", command=lambda: funciones.update_data(masterEntry, nameEntry, userEntry, passEntry, treeview))
+btn_update.grid(row=0, column=1, padx=5, pady=5)
+
+btn_delete = ttk.Button(button_frame, text="Eliminar", command=lambda: funciones.delete_data(treeview, nameEntry, userEntry, passEntry))
+btn_delete.grid(row=0, column=2, padx=5, pady=5)
+
 # Actualizar datos antes de ejecutar
-update_treeview(treeview)
+utils.update_treeview(treeview)
 
 # Ejecutar la ventana
 root.mainloop()
