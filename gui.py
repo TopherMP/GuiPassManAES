@@ -1,11 +1,9 @@
 import tkinter as tk
 from tkinter import ttk
-import base64
 import funciones, utils, genPass
 
 class App(tk.Tk):
     def __init__(self):
-
         super().__init__()
         # Configuración de la ventana principal
         #root = tk.Tk()
@@ -71,7 +69,7 @@ class App(tk.Tk):
         sliderValue.grid(row=1, column=3)
 
         # Crear un slider para elegir la longitud de la contraseña
-        slider = ttk.Scale(generate_frame, from_=8, to=128, orient='horizontal', command= lambda: funciones.updateLabelSlider)
+        slider = ttk.Scale(generate_frame, from_=8, to=128, orient='horizontal', command= lambda event: funciones.updateLabelSlider(event,slider,sliderValue))
         slider.set(20)  # Establecer el valor inicial del slider
         slider.grid(row=1, column=2, pady=5)
 

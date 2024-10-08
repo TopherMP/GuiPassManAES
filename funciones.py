@@ -3,6 +3,7 @@ from tkinter import ttk
 from tkinter import messagebox
 import utils
 import base64
+import encryption
 
 # JSON donde se almacenan los datos
 dictJson = utils.load_json(".passwords.json")
@@ -18,7 +19,7 @@ def create_data(masterEntry, nameEntry, userEntry, passEntry, treeview):
         messagebox.showwarning("Clave maestra", "Por favor, ingrese su clave maestra.")
     else:
 
-        salt, nonce, encryptedPass, tag = utils.encryptMasterPass(master, pass_App)
+        salt, nonce, encryptedPass, tag = encryption.encryptMasterPass(master, pass_App)
         print(encryptedPass)
 
         encodePass = base64.b64encode(encryptedPass).decode('utf-8')
@@ -81,7 +82,7 @@ def update_data(masterEntry, nameEntry, userEntry, passEntry, treeview):
             messagebox.showwarning("Clave maestra", "Por favor, ingrese su clave maestra.")
 
         else:
-            salt, nonce, encryptedPass, tag = utils.encryptMasterPass(master, pass_App)
+            salt, nonce, encryptedPass, tag = encryption.encryptMasterPass(master, pass_App)
             print(encryptedPass)
 
             # Se codifica en base64
@@ -184,7 +185,7 @@ def encrypt(root):
     for app, data in dictJson.items():
         master = data["MasterPass"]
 
-        salt, nonce, encryptedPass, tag = utils.encryptMasterPass(master, data["Password"])
+        salt, nonce, encryptedPass, tag = encryption.encryptMasterPass(master, data["Password"])
         print(encryptedPass)
 
         encodePass = base64.b64encode(encryptedPass).decode('utf-8')
