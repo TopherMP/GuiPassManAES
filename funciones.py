@@ -1,3 +1,5 @@
+import tkinter as tk
+from tkinter import ttk
 from tkinter import messagebox
 import utils
 import base64
@@ -64,17 +66,25 @@ def create_data(masterEntry, nameEntry, userEntry, passEntry, treeview):
 # Actualizar datos
 def update_data(masterEntry, nameEntry, userEntry, passEntry, treeview):
     for app, data in dictJson.items():
+
         app_Name = nameEntry.get()
         user_Mail_App = userEntry.get()
         pass_App = passEntry.get()
+
+        salt = data['Salt']
+        nonce = data['Nonce']
+        tag = data['Tag']
+
         master = data["MasterPass"]
 
-        if master == "":
+        if masterEntry.get() != master:
             messagebox.showwarning("Clave maestra", "Por favor, ingrese su clave maestra.")
+
         else:
             salt, nonce, encryptedPass, tag = utils.encryptMasterPass(master, pass_App)
             print(encryptedPass)
 
+            # Se codifica en base64
             encodePass = base64.b64encode(encryptedPass).decode('utf-8')
             encodeSalt = base64.b64encode(salt).decode('utf-8')
             encodeNonce = base64.b64encode(nonce).decode('utf-8')
@@ -147,3 +157,48 @@ def delete_data(treeview, nameEntry, userEntry, passEntry):
             messagebox.showinfo("Cancelado","Has cancelado la operación")
     else:
         messagebox.showwarning("Advertencia", "Selecciona un elemento de la lista para eliminar")
+
+# Obtener los datos del TreeView
+def get_Data_Entry(event, treeview, nameEntry, userEntry, passEntry):
+    selected_index = treeview.selection()
+
+    if selected_index:
+
+        item = treeview.item(selected_index)
+        app_Name = item["values"]
+
+        nameEntry.delete(0, tk.END)
+        nameEntry.insert(0, app_Name[0])
+
+        userEntry.delete(0, tk.END)
+        userEntry.insert(0, app_Name[1])
+
+        passEntry.delete(0, tk.END)
+        passEntry.insert(0, app_Name[2])
+
+def updateLabelSlider(e,slider, sliderValue):
+    value = int(slider.get())  # Convertir el valor del slider a entero
+    sliderValue.config(text=value)  # Actualizar el texto del label con el valor del slider
+
+def encrypt(root):
+    for app, data in dictJson.items():
+        master = data["MasterPass"]
+
+        salt, nonce, encryptedPass, tag = utils.encryptMasterPass(master, data["Password"])
+        print(encryptedPass)
+
+        encodePass = base64.b64encode(encryptedPass).decode('utf-8')
+        print(encodePass)
+        encodeSalt = base64.b64encode(salt).decode('utf-8')
+        encodeNonce = base64.b64encode(nonce).decode('utf-8')
+        encodeTag = base64.b64encode(tag).decode('utf-8')
+
+        dictJson[app] = {
+        "User": data["User"],
+        "Password": encodePass,
+        "Salt": encodeSalt,
+        "Nonce": encodeNonce,
+        "Tag": encodeTag,
+        "MasterPass": master
+    }
+    root.destroy()
