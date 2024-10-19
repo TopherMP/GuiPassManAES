@@ -49,10 +49,13 @@ def create_data(masterEntry, nameEntry, userEntry, passEntry, treeview):
         dictJson[app_Name] = {
             "User": user_Mail_App,
             "Password": encodePass,
-            "Salt": encodeSalt,
-            "Nonce": encodeNonce,
-            "Tag": encodeTag,
-            "MasterPass": master
+            "EncryptData":{
+                "Salt": encodeSalt,
+                "Nonce": encodeNonce,
+                "Tag": encodeTag,
+                "MasterPass": master
+            }
+            
         }
 
         # Guardar datos en el archivo JSON
@@ -72,11 +75,11 @@ def update_data(masterEntry, nameEntry, userEntry, passEntry, treeview):
         user_Mail_App = userEntry.get()
         pass_App = passEntry.get()
 
-        salt = data['Salt']
-        nonce = data['Nonce']
-        tag = data['Tag']
+        salt = data["EncryptData"]['Salt']
+        nonce = data["EncryptData"]['Nonce']
+        tag = data["EncryptData"]['Tag']
 
-        master = data["MasterPass"]
+        master = data["EncryptData"]["MasterPass"]
 
         if masterEntry.get() != master:
             messagebox.showwarning("Clave maestra", "Por favor, ingrese su clave maestra.")
@@ -111,10 +114,12 @@ def update_data(masterEntry, nameEntry, userEntry, passEntry, treeview):
                 dictJson[app_Name] = {
                     "User": user_Mail_App,
                     "Password": encodePass,
-                    "Salt": encodeSalt,
-                    "Nonce": encodeNonce,
-                    "Tag": encodeTag,
-                    "MasterPass": master
+                    "EncryptData":{
+                        "Salt": encodeSalt,
+                        "Nonce": encodeNonce,
+                        "Tag": encodeTag,
+                        "MasterPass": master
+                    }
                 }
 
                 # Guardar datos actualizados
@@ -183,7 +188,7 @@ def updateLabelSlider(e,slider, sliderValue):
 
 def encrypt(root):
     for app, data in dictJson.items():
-        master = data["MasterPass"]
+        master = data["EncryptData"]["MasterPass"]
 
         salt, nonce, encryptedPass, tag = encryption.encryptMasterPass(master, data["Password"])
         print(encryptedPass)

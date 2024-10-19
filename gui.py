@@ -7,6 +7,9 @@ class App(tk.Tk):
         super().__init__()
         # Configuración de la ventana principal
         #root = tk.Tk()
+
+        ####################################################################
+                            # Configuracion de la app
         self.title("Gestor de Contraseñas")
 
         self.protocol("WM_DELETE_WINDOW", lambda: funciones.encrypt(self))
@@ -30,6 +33,7 @@ class App(tk.Tk):
         self.resizable(False, False)
 
         self.config(bg="#f0f0f0")  # Fondo gris claro
+        ###################################################################
 
         # Campo de entrada de datos
         frame = tk.Frame(self, bg="#f0f0f0")
@@ -51,7 +55,8 @@ class App(tk.Tk):
         passEntry = ttk.Entry(frame, width=30)
         passEntry.grid(row=3, column=1, padx=5, pady=5)
 
-        # password generate field
+        #################################################
+                    # password generate field
         generate_frame = ttk.Frame(self)
         generate_frame.pack(pady=10)
 
@@ -85,6 +90,7 @@ class App(tk.Tk):
 
         btn_generate = ttk.Button(generate_frame, text="Generar contraseña",command=lambda: genPass.generate_password(var_mayus, var_num, var_symbols, passEntry, slider))
         btn_generate.grid(row=1,column=4)
+        #################################################
 
         # Configuración del Treeview
         treeview = ttk.Treeview(self, columns=("Aplicación", "Usuario", "Contraseña"), show="headings", height=10)
@@ -100,7 +106,8 @@ class App(tk.Tk):
         treeview.column("Usuario")
         treeview.column("Contraseña")
 
-        # Botones para CRUD
+        ##################################################
+                        # Botones para CRUD
         button_frame = ttk.Frame(self)
         button_frame.pack(pady=10)
 
@@ -112,6 +119,7 @@ class App(tk.Tk):
 
         btn_delete = ttk.Button(button_frame, text="Eliminar", command=lambda: funciones.delete_data(treeview, nameEntry, userEntry, passEntry))
         btn_delete.grid(row=0, column=2, padx=5, pady=5)
+        #################################################
 
         # Actualizar datos antes de ejecutar
         utils.update_treeview(treeview)
